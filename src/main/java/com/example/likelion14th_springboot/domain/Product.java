@@ -1,7 +1,6 @@
 package com.example.likelion14th_springboot.domain;
 
 import com.example.likelion14th_springboot.domain.mapping.ProductOrders;
-import com.example.likelion14th_springboot.enums.Role;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -36,7 +35,21 @@ public class Product extends BaseTimeEntity {
     @OneToMany(mappedBy = "product", cascade = CascadeType.ALL)
     private List<ProductOrders> productOrders;
 
-    public void reduceStock(int amount){
+    public void reduceStock(int amount) {
+        if (!hasEnoughStock(amount)) {
+            throw new IllegalArgumentException("재고가 부족합니다. 상품: " + name);
+        }
         this.stock -= amount;
+    }
+
+    public boolean hasEnoughStock(int amount) {
+        return this.stock >= amount;
+    }
+
+    public void update(String name, Integer price, Integer stock, String description) {
+        this.name = name;
+        this.price = price;
+        this.stock = stock;
+        this.description = description;
     }
 }
