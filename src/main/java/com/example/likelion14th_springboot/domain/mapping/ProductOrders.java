@@ -3,16 +3,14 @@ package com.example.likelion14th_springboot.domain.mapping;
 import com.example.likelion14th_springboot.domain.Orders;
 import com.example.likelion14th_springboot.domain.Product;
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
+import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 @Entity
 @Getter
-@Builder
-@NoArgsConstructor
-@AllArgsConstructor
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class ProductOrders {
 
     @Id
@@ -27,5 +25,22 @@ public class ProductOrders {
     @JoinColumn(name = "order_id")
     private Orders orders;
 
-    private Integer quantity; // 구매 수량
+    private int quantity;
+
+    private int orderPrice;
+
+    @Builder
+    public ProductOrders(Product product, int quantity) {
+        this.product = product;
+        this.quantity = quantity;
+        this.orderPrice = product.getPrice();
+    }
+
+    public int getSubtotal() {
+        return orderPrice * quantity;
+    }
+
+    public void assignOrders(Orders orders) {
+        this.orders = orders;
+    }
 }
