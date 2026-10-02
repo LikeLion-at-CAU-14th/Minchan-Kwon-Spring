@@ -8,7 +8,6 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.data.domain.Page;
-import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.TestConstructor;
 import org.springframework.test.context.TestConstructor.AutowireMode;
 
@@ -24,7 +23,6 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 public class MemberServiceTest {
 
     private final MemberService memberService;
-
     private final MemberRepository memberRepository;
 
     MemberServiceTest(MemberService memberService, MemberRepository memberRepository) {
@@ -72,7 +70,7 @@ public class MemberServiceTest {
     void testGetByEmail() {
         Member actual = memberService.getByEmail("user1@test.com");
 
-        assertEquals("user01" ,actual.getName());
+        assertEquals("user01", actual.getName());
     }
 
     @Test
@@ -96,7 +94,7 @@ public class MemberServiceTest {
 
     @Test
     @DisplayName("이름이 주어진 값으로 시작하는 경우만 필터링")
-    void testGetMembersByNamePrefix(){
+    void testGetMembersByNamePrefix() {
         List<Member> memberList = memberService.getMembersByNamePrefix("user1");
 
         assertEquals(10, memberList.size());
@@ -105,7 +103,7 @@ public class MemberServiceTest {
 
     @Test
     @DisplayName("나이가 20 이상이고 이름 기준 오름차순 정렬된 페이징 결과 반환")
-    void testGetAdultMembersSortedByName(){
+    void testGetAdultMembersSortedByName() {
         Page<Member> page = memberService.getAdultMembersSortedByName(0, 10);
 
         assertThat(page.getContent()).hasSize(10);

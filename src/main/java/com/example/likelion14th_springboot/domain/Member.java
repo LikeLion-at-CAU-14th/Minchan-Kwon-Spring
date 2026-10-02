@@ -6,7 +6,8 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
-import java.util.*;
+import java.util.HashSet;
+import java.util.Set;
 
 @Entity
 @Getter
@@ -16,11 +17,28 @@ public class Member {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+
     private String name;
+    private String password;
+
     private String address;
     private String email;
     private String phoneNumber;
     private int age;
+
+    @Builder
+    public Member(String name, String password, String address, String email, String phoneNumber, int age,
+                  Role role, Boolean isAdmin, Integer deposit) {
+        this.name = name;
+        this.password = password;
+        this.address = address;
+        this.email = email;
+        this.phoneNumber = phoneNumber;
+        this.age = age;
+        this.role = role;
+        this.isAdmin = isAdmin;
+        this.deposit = deposit;
+    }
 
     @Enumerated(EnumType.STRING)
     private Role role; // 판매자면 SELLER, 구매자면 BUYER
@@ -32,23 +50,19 @@ public class Member {
     @OneToMany(mappedBy = "seller", cascade = CascadeType.ALL)
     private Set<Product> products = new HashSet<>();
 
-    public void chargeDeposit(int money){
+    public void chargeDeposit(int money) {
         this.deposit += money;
     }
+
     public void useDeposit(int money) {
         this.deposit -= money;
     }
 
-    @Builder
-    public Member(String name, String address, String email, String phoneNumber, int age,
-                  Role role, Boolean isAdmin, Integer deposit) {
-        this.name = name;
-        this.address = address;
-        this.email = email;
-        this.phoneNumber = phoneNumber;
-        this.age = age;
-        this.role = role;
-        this.isAdmin = isAdmin;
-        this.deposit = deposit;
+    public boolean isSeller() {
+        return Role.SELLER.equals(this.role);
+    }
+
+    public boolean hasEnoughDeposit(int amount) {
+        return this.deposit != null && this.deposit >= amount;
     }
 }

@@ -9,7 +9,13 @@ import java.util.List;
 import java.util.Optional;
 
 public interface MemberRepository extends JpaRepository<Member, Long> {
-        Optional<Member> findByEmail(String email);
-        Page<Member> findByAgeGreaterThanEqual(int age, Pageable pageable);
-        List<Member> findByNameStartingWith(String prefix);
-        }
+    Optional<Member> findByEmail(String email);
+
+    Page<Member> findByAgeGreaterThanEqual(int age, Pageable pageable);
+
+    List<Member> findByNameStartingWith(String prefix);
+
+    Optional<Member> findByName(String name);
+
+    boolean existsByName(String name);
+}
