@@ -17,38 +17,49 @@ import java.util.List;
 @RequiredArgsConstructor
 public class MemberService {
 
-    private final MemberRepository memberRepository;
-    private final BCryptPasswordEncoder bCryptPasswordEncoder;
+	private final MemberRepository memberRepository;
+	private final BCryptPasswordEncoder bCryptPasswordEncoder;
 
-    public List<Member> getAllMembers() {
-        return memberRepository.findAll();
-    }
+	public List<Member> getAllMembers() {
+		return memberRepository.findAll();
+	}
 
-    public Member getByEmail(String email) {
-        return memberRepository.findByEmail(email).orElseThrow(() -> new IllegalArgumentException("User not found with email: " + email));
-    }
+	public Member getByEmail(String email) {
+		return memberRepository.findByEmail(email).orElseThrow(() -> new IllegalArgumentException("User not found with email: " + email));
+	}
 
-    public Page<Member> getMembersByPage(int page, int size) {
-        return memberRepository.findAll(PageRequest.of(page, size, Sort.by("id").descending()));
-    }
+	public Page<Member> getMembersByPage(int page, int size) {
+		return memberRepository.findAll(PageRequest.of(page, size, Sort.by("id").descending()));
+	}
 
-    public Page<Member> getAdultMembersSortedByName(int page, int size) {
-        return memberRepository.findByAgeGreaterThanEqual(20, PageRequest.of(page, size, Sort.by("name").ascending()));
-    }
+	public Page<Member> getAdultMembersSortedByName(int page, int size) {
+		return memberRepository.findByAgeGreaterThanEqual(20, PageRequest.of(page, size, Sort.by("name").ascending()));
+	}
 
-    public List<Member> getMembersByNamePrefix(String prefix) {
-        return memberRepository.findByNameStartingWith(prefix);
-    }
+	public List<Member> getMembersByNamePrefix(String prefix) {
+		return memberRepository.findByNameStartingWith(prefix);
+	}
 
-    public void join(JoinRequestDto joinRequestDto) {
-        // 해당 name이 이미 존재하는 경우
-        if (memberRepository.existsByName(joinRequestDto.getName())) {
-            throw new DuplicateNameException("중복되는 이름입니다.");
-        }
-        // 유저 객체 생성
-        Member member = joinRequestDto.toEntity(bCryptPasswordEncoder);
+	public void join(JoinRequestDto joinRequestDto) {
+		// 해당 name이 이미 존재하는 경우
+		if (memberRepository.existsByName(joinRequestDto.getName())) {
+			throw new DuplicateNameException("중복되는 이름입니다.");
+		}
+		// 유저 객체 생성
+		Member member = joinRequestDto.toEntity(bCryptPasswordEncoder);
 
-        // 유저 정보 저장
-        memberRepository.save(member);
-    }
+		// 유저 정보 저장
+		memberRepository.save(member);
+	}
+
+	public Member login(JoinRequestDto joinRequestDto) {
+		Member member = memberRepository.findByName(joinRequestDto.getName())
+				.orElseThrow(() -> new IllegalArgumentException("존재하지 않는 사용자입니다."));
+
+		if (!bCryptPasswordEncoder.matches(joinRequestDto.getPassword(), member.getPassword())) {
+			return null;
+		}
+
+		return member;
+	}
 }
