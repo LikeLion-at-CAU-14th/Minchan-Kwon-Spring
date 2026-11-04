@@ -93,4 +93,15 @@ public class ProductService {
         // 4. DB에서 상품 완전 삭제
         productRepository.delete(product);
     }
+
+    @Transactional(readOnly = true)
+    public List<ProductResponseDto> getMyProducts(String email) {
+        Member seller = memberRepository.findByEmail(email)
+                .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 회원입니다."));
+
+        List<Product> products = productRepository.findBySellerId(seller.getId());
+        return products.stream()
+                .map(ProductResponseDto::fromEntity)
+                .toList();
+    }
 }
