@@ -61,4 +61,3 @@ public class ProductController {
 		return ResponseEntity.ok("상품이 성공적으로 삭제되었습니다.");
 	}
 }
-

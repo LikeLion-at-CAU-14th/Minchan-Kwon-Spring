@@ -41,7 +41,7 @@ public class SecurityConfig {
 				.httpBasic(AbstractHttpConfigurer::disable) // http basic auth 기반 로그인 인증창 뜨지 않게
 				.formLogin(AbstractHttpConfigurer::disable) // 기본 로그인 페이지 없애기
 				.authorizeHttpRequests((auth) -> auth
-						.requestMatchers("/join", "/login", "/oauth2/**", "/login/oauth2/**").permitAll()
+						.requestMatchers("/join", "/login", "/oauth2/**", "/login/oauth2/**", "/api/health").permitAll() // 모두 허용
 						.requestMatchers("/**").authenticated()) // 인증된 사용자만 허용
 				.oauth2Login(oauth -> oauth
 						.userInfoEndpoint(userInfo -> userInfo
@@ -52,7 +52,7 @@ public class SecurityConfig {
 //				.formLogin(Customizer.withDefaults()) // login 설정
 //				.logout(Customizer.withDefaults()) // logout 설정
 				.userDetailsService(customUserDetailsService);
-		
+
 		http.addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class); // 해당 필터 전에 jwtFilter가 걸리도록
 
 		return http.build();
