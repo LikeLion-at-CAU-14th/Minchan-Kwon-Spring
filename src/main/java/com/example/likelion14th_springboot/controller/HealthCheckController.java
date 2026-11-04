@@ -10,6 +10,6 @@ public class HealthCheckController {
 	@GetMapping("/api/health")
 	public Map<String, String> healthCheck() {
 		// Postman에서 JSON 형태로 보일 수 있도록 Map 반환
-		return Map.of("status", "UP");
+		return Map.of("status", "UP"); //확인용
 	}
 }
